@@ -1,3 +1,5 @@
+// index.js
+
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const messageList = document.getElementById('messageList');
@@ -23,4 +25,9 @@ database.ref('messages').orderByChild('timestamp').on('child_added', (snapshot) 
 
 document.getElementById('adminButton').addEventListener('click', () => {
     window.location.href = 'admin.html';
+});
+
+// Add this to check if messages are being retrieved
+database.ref('messages').once('value', (snapshot) => {
+    console.log('All messages:', snapshot.val());
 });
