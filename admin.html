@@ -3,49 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        #loginForm, #messageForm {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-    </style>
+    <title>Admin - Broadcast Message</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Admin - Broadcast Message</h1>
@@ -67,75 +26,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDjJdT_azhDvxE1q4pkCEG1dM-GsNKTHi4",
-            authDomain: "gossipgurl-9c077.firebaseapp.com",
-            projectId: "gossipgurl-9c077",
-            storageBucket: "gossipgurl-9c077.appspot.com",
-            messagingSenderId: "236525812834",
-            appId: "1:236525812834:web:be5f1c02b801e538ff653b",
-            measurementId: "G-0M6F5WWG6Z"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        const loginForm = document.getElementById('loginForm');
-        const messageForm = document.getElementById('messageForm');
-        const emailInput = document.getElementById('emailInput');
-        const passwordInput = document.getElementById('passwordInput');
-        const loginButton = document.getElementById('loginButton');
-        const logoutButton = document.getElementById('logoutButton');
-        const messageInput = document.getElementById('messageInput');
-        const submitButton = document.getElementById('submitButton');
-
-        loginButton.addEventListener('click', (e) => {
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    console.log('Logged in successfully');
-                })
-                .catch((error) => {
-                    console.error('Login error:', error);
-                    alert('Login failed. Please check your credentials.');
-                });
-        });
-
-        logoutButton.addEventListener('click', (e) => {
-            auth.signOut().then(() => {
-                console.log('Logged out successfully');
-            }).catch((error) => {
-                console.error('Logout error:', error);
-            });
-        });
-
-        submitButton.addEventListener('click', (e) => {
-            const message = messageInput.value.trim();
-            if (message && message.split(' ').length <= 100) {
-                database.ref('messages').push({
-                    content: message,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-                messageInput.value = '';
-                alert('Message broadcasted successfully!');
-            } else {
-                alert('Please enter a valid message (max 100 words)');
-            }
-        });
-
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                loginForm.style.display = 'none';
-                messageForm.style.display = 'block';
-            } else {
-                loginForm.style.display = 'block';
-                messageForm.style.display = 'none';
-            }
-        });
-    </script>
+    <script src="config.js"></script>
+    <script src="admin.js"></script>
 </body>
 </html>
