@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Broadcast Message</title>
+    <title>Admin</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -18,13 +18,14 @@
             text-align: center;
             margin-bottom: 30px;
         }
-        #messageForm {
+        #loginForm, #messageForm {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-        #messageInput {
+        input, textarea {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -32,7 +33,7 @@
             border-radius: 4px;
             font-size: 16px;
         }
-        #submitButton {
+        button {
             padding: 10px 20px;
             background-color: #3498db;
             color: #fff;
@@ -41,22 +42,32 @@
             cursor: pointer;
             font-size: 16px;
         }
-        #submitButton:hover {
+        button:hover {
             background-color: #2980b9;
         }
     </style>
 </head>
 <body>
-    <h1>Broadcast Message</h1>
-    <form id="messageForm">
+    <h1>Admin - Broadcast Message</h1>
+    
+    <div id="loginForm">
+        <h2>Login</h2>
+        <input type="email" id="emailInput" placeholder="Email" required>
+        <input type="password" id="passwordInput" placeholder="Password" required>
+        <button id="loginButton">Login</button>
+    </div>
+
+    <div id="messageForm" style="display: none;">
+        <h2>Broadcast Message</h2>
         <textarea id="messageInput" placeholder="Enter your message (max 100 words)" rows="4" maxlength="500"></textarea>
-        <button type="submit" id="submitButton">Broadcast</button>
-    </form>
+        <button id="submitButton">Broadcast</button>
+        <button id="logoutButton">Logout</button>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        // Your Firebase configuration object will go here
         const firebaseConfig = {
             apiKey: "AIzaSyDjJdT_azhDvxE1q4pkCEG1dM-GsNKTHi4",
             authDomain: "gossipgurl-9c077.firebaseapp.com",
@@ -67,22 +78,44 @@
             measurementId: "G-0M6F5WWG6Z"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
 
-        // Get a reference to the database service
+        const auth = firebase.auth();
         const database = firebase.database();
 
-        // Get DOM elements
+        const loginForm = document.getElementById('loginForm');
         const messageForm = document.getElementById('messageForm');
+        const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginButton = document.getElementById('loginButton');
+        const logoutButton = document.getElementById('logoutButton');
         const messageInput = document.getElementById('messageInput');
+        const submitButton = document.getElementById('submitButton');
 
-        // Listen for form submissions
-        messageForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+        loginButton.addEventListener('click', (e) => {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log('Logged in successfully');
+                })
+                .catch((error) => {
+                    console.error('Login error:', error);
+                    alert('Login failed. Please check your credentials.');
+                });
+        });
+
+        logoutButton.addEventListener('click', (e) => {
+            auth.signOut().then(() => {
+                console.log('Logged out successfully');
+            }).catch((error) => {
+                console.error('Logout error:', error);
+            });
+        });
+
+        submitButton.addEventListener('click', (e) => {
             const message = messageInput.value.trim();
             if (message && message.split(' ').length <= 100) {
-                // Push the message to Firebase
                 database.ref('messages').push({
                     content: message,
                     timestamp: firebase.database.ServerValue.TIMESTAMP
@@ -91,6 +124,16 @@
                 alert('Message broadcasted successfully!');
             } else {
                 alert('Please enter a valid message (max 100 words)');
+            }
+        });
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loginForm.style.display = 'none';
+                messageForm.style.display = 'block';
+            } else {
+                loginForm.style.display = 'block';
+                messageForm.style.display = 'none';
             }
         });
     </script>
