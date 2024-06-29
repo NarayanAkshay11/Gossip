@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message Board</title>
+    <title>Gossip Girl</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -38,13 +38,12 @@
     </style>
 </head>
 <body>
-    <h1>Message Board</h1>
+    <h1>Gossip Girl</h1>
     <div id="messageList"></div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        // Your Firebase configuration object will go here
         const firebaseConfig = {
             apiKey: "AIzaSyDjJdT_azhDvxE1q4pkCEG1dM-GsNKTHi4",
             authDomain: "gossipgurl-9c077.firebaseapp.com",
@@ -55,16 +54,10 @@
             measurementId: "G-0M6F5WWG6Z"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-
-        // Get a reference to the database service
         const database = firebase.database();
-
-        // Get DOM elements
         const messageList = document.getElementById('messageList');
 
-        // Listen for new messages
         database.ref('messages').orderByChild('timestamp').on('child_added', (snapshot) => {
             const message = snapshot.val();
             const messageElement = document.createElement('div');
