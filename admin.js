@@ -1,3 +1,5 @@
+// admin.js
+
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
@@ -36,12 +38,20 @@ logoutButton.addEventListener('click', (e) => {
 submitButton.addEventListener('click', (e) => {
     const message = messageInput.value.trim();
     if (message && message.split(' ').length <= 100) {
-        database.ref('messages').push({
+        const newMessageRef = database.ref('messages').push();
+        newMessageRef.set({
             content: message,
             timestamp: firebase.database.ServerValue.TIMESTAMP
+        })
+        .then(() => {
+            console.log('Message sent successfully');
+            messageInput.value = '';
+            alert('Message broadcasted successfully!');
+        })
+        .catch((error) => {
+            console.error('Error sending message:', error);
+            alert('Failed to send message. Please try again.');
         });
-        messageInput.value = '';
-        alert('Message broadcasted successfully!');
     } else {
         alert('Please enter a valid message (max 100 words)');
     }
